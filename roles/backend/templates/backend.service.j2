@@ -1,0 +1,14 @@
+[Unit]
+Description=Doctor App Backend Service
+
+[Service]
+User=doctor
+Environment=DB_HOST="{{login_host}}"    
+Environment=DB_USERNAME=doctor                  
+Environment=DB_PASSWORD=Doctor@123            
+Environment=APP_CORS_ALLOWED_ORIGINS=http://{{web_host}}
+ExecStart=/bin/java -jar /app/doctorapp.jar
+SyslogIdentifier=doctor
+
+[Install]
+WantedBy=multi-user.target

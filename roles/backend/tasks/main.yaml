@@ -1,0 +1,68 @@
+- name: install python dependencies
+  ansible.builtin.pip:
+    name: "{{item}}"
+    executable: pip3.9
+  loop:
+  - PyMySQL
+  - cryptography
+
+- name: install maven
+  ansible.builtin.package:
+    name: "{{item}}"
+    state: present
+  loop:
+  - maven
+  - mysql
+
+- name: Create a system user
+  ansible.builtin.user: 
+    name: doctor
+    shell: /sbin/nologin
+    system: yes
+    home: /app
+
+- name: create app directory
+  ansible.builtin.file:
+    path: /app
+    state: directory
+
+- name: Download backend code
+  ansible.builtin.get_url:
+    url: https://jyo1994-vs-workspace.s3.us-east-1.amazonaws.com/DoctorAppointment-BE-v1.zip
+    dest: /tmp/doctorapp.zip
+
+- name: extract backend code
+  ansible.builtin.unarchive:
+    src: /tmp/doctorapp.zip
+    dest: /app
+    remote_src: yes
+
+- name: Copy jar file to app directory
+  ansible.builtin.copy:
+    src: /app/target/HospitalAppointment-0.0.1-SNAPSHOT.jar
+    dest: /app/doctorapp.jar
+    remote_src: yes
+
+- name: Copy the service file
+  ansible.builtin.template: #copy module is only is used to file without variables
+    src: doctor.service.j2
+    dest: /etc/systemd/system/doctor.service
+
+- name: Import the data to mysql server
+  community.mysql.mysql_db:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    login_host: "{{ login_host }}"
+    target: /app/db/app-user.db
+    name: all
+    state: import
+
+- name: daemon reload
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: enable and start doctor
+  ansible.builtin.service:
+    name: doctor
+    state: started
+    enabled: yes
