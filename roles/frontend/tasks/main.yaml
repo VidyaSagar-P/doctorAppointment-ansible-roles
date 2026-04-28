@@ -1,0 +1,41 @@
+- name: install nginx
+  ansible.builtin.package:
+    name: nginx
+    state: present
+
+- name: run nginx
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: remove default nginx directory
+  ansible.builtin.file: 
+    path: /usr/share/nginx/html
+    state: absent
+
+- name: create directory
+  ansible.builtin.file:
+    path: /usr/share/nginx/html
+    state: directory
+
+- name: Download frontend code
+  ansible.builtin.get_url:
+    url: https://jyo1994-vs-workspace.s3.us-east-1.amazonaws.com/doctorAppointment-index.zip
+    dest: /tmp/doctor-appointment.zip
+
+- name: extract frontend code
+  ansible.builtin.unarchive:
+    src: /tmp/doctor-appointment.zip
+    dest: /usr/share/nginx/html
+    remote_src: yes
+
+- name: copy config file
+  ansible.builtin.template:
+    src: doctor.conf.j2
+    dest: /etc/nginx/default.d/doctor.conf
+
+- name: run nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
