@@ -12,7 +12,7 @@
 
 - name: enable and start the mysql server
   tags:
-  - db restart
+  - dbrestart
   ansible.builtin.service:
     name: mysqld
     state: started
