@@ -34,8 +34,10 @@
   ansible.builtin.template:
     src: doctor.conf.j2
     dest: /etc/nginx/default.d/doctor.conf
+  notify:
+  - restart nginx
 
-- name: run nginx
-  ansible.builtin.service:
-    name: nginx
-    state: restarted
+# - name: restart nginx
+#   ansible.builtin.service:
+#     name: nginx
+#     state: restarted
