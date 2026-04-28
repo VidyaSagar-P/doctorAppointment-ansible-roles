@@ -1,1 +1,3 @@
 backend_host: backend.bavs.space
+app_location: /usr/share/nginx/html
+component: doctorAppointment-index

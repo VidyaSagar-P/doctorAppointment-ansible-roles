@@ -1,0 +1,17 @@
+
+- name: remove app directory
+  ansible.builtin.file:
+    path: "{{app_location}}"
+    state: absent
+  ignore_errors: true
+
+- name: create app directory
+  ansible.builtin.file:
+    path: "{{app_location}}"
+    state: directory
+
+- name: extract backend code
+  ansible.builtin.unarchive:
+    src: https://jyo1994-vs-workspace.s3.us-east-1.amazonaws.com/{{component}}.zip
+    dest: "{{app_location}}"
+    remote_src: yes

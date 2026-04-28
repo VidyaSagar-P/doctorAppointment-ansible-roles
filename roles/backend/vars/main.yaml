@@ -1,3 +1,5 @@
 mysql_root_password: Doctor@1
 login_host: mysql.bavs.space
 web_host: bavs.space 
+app_location: /app
+component: DoctorAppointment-BE-v1

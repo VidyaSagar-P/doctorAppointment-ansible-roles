@@ -9,20 +9,10 @@
     state: started
     enabled: yes
 
-- name: remove default nginx directory
-  ansible.builtin.file: 
-    path: /usr/share/nginx/html
-    state: absent
-
-- name: create directory
-  ansible.builtin.file:
-    path: /usr/share/nginx/html
-    state: directory
-
-- name: Download frontend code
-  ansible.builtin.get_url:
-    url: https://jyo1994-vs-workspace.s3.us-east-1.amazonaws.com/doctorAppointment-index.zip
-    dest: /tmp/doctor-appointment.zip
+- name: import tasks from common role
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: app-pre-req
 
 - name: extract frontend code
   ansible.builtin.unarchive:
