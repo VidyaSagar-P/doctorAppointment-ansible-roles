@@ -11,6 +11,8 @@
       state: present
 
 - name: enable and start the mysql server
+  tags:
+  - db restart
   ansible.builtin.service:
     name: mysqld
     state: started
